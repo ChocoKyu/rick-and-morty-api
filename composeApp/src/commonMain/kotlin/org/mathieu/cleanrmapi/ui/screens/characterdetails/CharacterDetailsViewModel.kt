@@ -46,8 +46,8 @@ class CharacterDetailsViewModel :
         when(action) {
             is CharacterDetailsAction.SelectedEpisode ->
                 sendEvent(Destination.EpisodeDetails(action.episode.id.toString()))
+            is CharacterDetailsAction.SelectedLocation ->
+                sendEvent(Destination.LocationDetails(action.locationId.toString()))
         }
     }
-
-
 }

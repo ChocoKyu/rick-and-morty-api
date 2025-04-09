@@ -36,7 +36,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -59,6 +58,8 @@ import org.mathieu.cleanrmapi.ui.core.extensions.imageVector
 import org.mathieu.cleanrmapi.ui.core.extensions.text
 import org.mathieu.cleanrmapi.ui.core.theme.PrimaryColor
 import org.mathieu.cleanrmapi.ui.core.theme.SurfaceColor
+import org.mathieu.cleanrmapi.ui.core.composables.ErrorView
+import org.mathieu.cleanrmapi.ui.core.composables.LoadingView
 
 @Composable
 fun CharacterDetailsScreen(
@@ -81,7 +82,6 @@ fun CharacterDetailsScreen(
         )
 
     }
-
 }
 
 @Composable
@@ -105,32 +105,15 @@ private fun Content(
 
     Crossfade(targetState = state) {
         when (it) {
-            is CharacterDetailsState.Error -> ErrorView(error = it.message)
+            is CharacterDetailsState.Error -> ErrorView(message = it.message)
+            is CharacterDetailsState.Loading -> LoadingView()
             is CharacterDetailsState.Loaded -> CharacterDetailsContent(
                 state = it,
                 onAction = onAction
             )
-            CharacterDetailsState.Loading -> {
-                /** TODO: Could display a Loading Animation */
-            }
         }
     }
 }
-
-
-@Composable
-private fun ErrorView(error: String) {
-    Text(
-        modifier = Modifier.padding(16.dp),
-        text = error,
-        textAlign = TextAlign.Center,
-        color = PrimaryColor,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Medium,
-        lineHeight = 36.sp
-    )
-}
-
 
 private object CharacterDetailsContent {
 
@@ -151,7 +134,8 @@ private object CharacterDetailsContent {
 
             Header(
                 state = state,
-                offsetY = offsetY
+                offsetY = offsetY,
+                onAction = onAction
             )
 
             LazyColumn {
@@ -175,8 +159,6 @@ private object CharacterDetailsContent {
             }
 
         }
-
-
     }
 
 
@@ -184,7 +166,8 @@ private object CharacterDetailsContent {
     @Composable
     private fun Header(
         state: CharacterDetailsState.Loaded,
-        offsetY: Float
+        offsetY: Float,
+        onAction: (CharacterDetailsAction) -> Unit
     ) {
 
         val density = LocalDensity.current
@@ -220,7 +203,8 @@ private object CharacterDetailsContent {
                 AdditionalInfo(
                     gender = state.gender,
                     status = state.status,
-                    location = state.location
+                    location = state.location,
+                    onAction = onAction
                 )
 
             }
@@ -232,7 +216,8 @@ private object CharacterDetailsContent {
     private fun AdditionalInfo(
         gender: CharacterGender,
         status: CharacterStatus,
-        location: LocationPreview
+        location: LocationPreview,
+        onAction: (CharacterDetailsAction) -> Unit
     ) = Row(
         modifier = Modifier
             .padding(8.dp)
@@ -251,8 +236,11 @@ private object CharacterDetailsContent {
         Spacer(Modifier.width(16.dp))
 
         IconWithImage(
-            modifier = Modifier.weight(1f),
-            imageVector = Icons.Rounded.Home, text = location.name
+            modifier = Modifier
+                .weight(1f)
+                .clickable { onAction(CharacterDetailsAction.SelectedLocation(location.id)) },
+            imageVector = Icons.Rounded.Home,
+            text = location.name
         )
 
         Spacer(Modifier.width(16.dp))
@@ -287,8 +275,6 @@ private object CharacterDetailsContent {
             )
 
         }
-
-
 }
 
 @Preview

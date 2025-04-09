@@ -60,6 +60,9 @@ import org.mathieu.cleanrmapi.ui.core.theme.PrimaryColor
 import org.mathieu.cleanrmapi.ui.core.theme.SurfaceColor
 import org.mathieu.cleanrmapi.ui.core.composables.ErrorView
 import org.mathieu.cleanrmapi.ui.core.composables.LoadingView
+import org.koin.compose.koinInject
+import org.mathieu.cleanrmapi.common.SoundPlayer
+
 
 @Composable
 fun CharacterDetailsScreen(
@@ -143,8 +146,8 @@ private object CharacterDetailsContent {
                     if (index == 0) {
                         Box(modifier = Modifier.onGloballyPositioned { offsetY = it.positionInParent().y })
                     }
-                    
-                    
+
+
                     EpisodeCard(
                         modifier = Modifier
                             .padding(8.dp)
@@ -218,40 +221,46 @@ private object CharacterDetailsContent {
         status: CharacterStatus,
         location: LocationPreview,
         onAction: (CharacterDetailsAction) -> Unit
-    ) = Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        val soundPlayer: SoundPlayer = koinInject()
 
-        Spacer(Modifier.width(8.dp))
-
-        IconWithImage(
-            modifier = Modifier.weight(1f),
-            imageVector = gender.imageVector, text = gender.text
-        )
-
-        Spacer(Modifier.width(16.dp))
-
-        IconWithImage(
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .clickable { onAction(CharacterDetailsAction.SelectedLocation(location.id)) },
-            imageVector = Icons.Rounded.Home,
-            text = location.name
-        )
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(IntrinsicSize.Max),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
 
-        Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(8.dp))
 
-        IconWithImage(
-            modifier = Modifier.weight(1f),
-            imageVector = status.imageVector, text = status.text
-        )
+            IconWithImage(
+                modifier = Modifier.weight(1f),
+                imageVector = gender.imageVector, text = gender.text
+            )
 
-        Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(16.dp))
 
+            IconWithImage(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        soundPlayer.play("https://cdn.freesound.org/previews/570/570266_3436454-lq.ogg")
+                        onAction(CharacterDetailsAction.SelectedLocation(location.id))
+                    },
+                imageVector = Icons.Rounded.Home,
+                text = location.name
+            )
+
+            Spacer(Modifier.width(16.dp))
+
+            IconWithImage(
+                modifier = Modifier.weight(1f),
+                imageVector = status.imageVector, text = status.text
+            )
+
+            Spacer(Modifier.width(8.dp))
+        }
     }
 
     @Composable

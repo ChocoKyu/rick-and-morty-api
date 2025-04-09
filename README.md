@@ -1,21 +1,67 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop.
+# Rick & Morty KMP App
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+Une application multiplateforme basée sur l'API Rick and Morty, utilisant Kotlin Multiplatform, Compose Multiplatform, Clean Architecture, Room et Ktor.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+---
 
+## Plateformes supportées
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+Ce projet Kotlin Multiplatform cible :
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [GitHub](https://github.com/JetBrains/compose-multiplatform/issues).
+- Android
+- iOS (entrée dans le dossier `iosApp`)
+- Desktop (JVM)
+- Web (WASM)
 
-You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
+---
+
+## Fonctionnalités
+
+- Liste paginée des personnages
+- Fiche détaillée d’un personnage : avatar, statut, genre, épisodes
+- Affichage de l’origine et de la dernière location
+- Nouvelle feature : écran `LocationDetails` avec liste des résidents
+- Son joué au clic sur une carte de location
+- Cache local avec Room (Character, Episode, Location)
+- Architecture modulaire basée sur Clean Architecture
+- MVI : gestion des écrans par `UiState`, `UiAction`, `ViewModel`, `Screen`
+
+---
+
+## Architecture
+
+Le projet suit les principes de Clean Architecture :
+
+- `domain` : logique métier, modèles, interfaces Repository
+- `data` : appels API (Ktor), cache local (Room), mapping DTO/Entity/Model
+- `ui` : interface utilisateur avec Compose Multiplatform, gérée via MVI
+
+Autres éléments techniques :
+- Injection de dépendances avec Koin
+- Ktor pour les appels HTTP
+- Room (avec SQLite) pour le cache local
+- Compose Multiplatform pour l’interface graphique sur Android, Desktop et Web
+
+---
+
+## Structure du projet
+
+```text
+composeApp/
+├── commonMain/
+│   ├── data/
+│   │   ├── local/           → DAO, Entities, RoomDatabase
+│   │   ├── remote/          → API, DTOs, Ktor
+│   │   ├── repositories/    → Repositories implémentés
+│   ├── domain/              → Interfaces métier, models, use cases
+│   ├── ui/
+│   │   ├── screens/         → MVI (characters, details, locations)
+│   │   ├── core/            → Composables réutilisables, thème, navigation
+├── androidMain/
+│   └── MainApplication.kt   → Démarrage et configuration Koin
+├── desktopMain/
+│   └── Main.kt              → Entrée principale desktop
+├── wasmJsMain/
+│   └── Fichier principal Web
+iosApp/
+└── Code Swift/SwiftUI pour l’entrée iOS

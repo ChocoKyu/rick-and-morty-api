@@ -3,12 +3,13 @@ package org.mathieu.cleanrmapi.ui.screens.characterdetails
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
 import org.mathieu.cleanrmapi.domain.character.models.CharacterStatus
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
+import org.mathieu.cleanrmapi.domain.location.models.LocationPreview
 
 
-sealed interface `CharacterDetailsState.kt` {
-    object Loading : `CharacterDetailsState.kt`
+sealed interface CharacterDetailsState {
+    object Loading : CharacterDetailsState
 
-    data class Error(val message: String) : `CharacterDetailsState.kt`
+    data class Error(val message: String) : CharacterDetailsState
 
     data class Loaded(
         val name: String,
@@ -16,8 +17,8 @@ sealed interface `CharacterDetailsState.kt` {
         val episodes: List<Episode>,
         val status: CharacterStatus,
         val gender: CharacterGender,
-        val origin: String,
-        val location: String,
-    ) : `CharacterDetailsState.kt`
+        val origin: LocationPreview,
+        val location: LocationPreview,
+    ) : CharacterDetailsState
 
 }

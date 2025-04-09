@@ -1,4 +1,4 @@
-package org.mathieu.cleanrmapi.domain.location
+package org.mathieu.cleanrmapi.domain.location.models
 
 /**
  * Represents a simplified view of a location, usually used for previews.

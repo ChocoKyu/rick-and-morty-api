@@ -9,7 +9,7 @@ import org.mathieu.cleanrmapi.domain.character.models.Character
  * @property name The name of the episode.
  * @property airDate The broadcast date of the episode.
  * @property episode The episode code, which usually includes both the season and episode number (e.g., S01E01).
- * @property characters The characters that plays in this episode.
+ * @property characters The [Character]s that plays in this episode.
  */
 data class EpisodeWithCharacters(
     val id: Int,

@@ -10,7 +10,7 @@ import org.mathieu.cleanrmapi.domain.character.models.Character
  * @property name The name of the location.
  * @property type The type or category of the location.
  * @property dimension The specific dimension or universe where this location exists.
- * @property residents A list of [Character] who have been known to reside or appear in this location.
+ * @property residents A list of [Character]s who have been known to reside or appear in this location.
  */
 data class Location(
     val id: Int,

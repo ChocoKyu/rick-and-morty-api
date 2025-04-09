@@ -245,6 +245,7 @@ private object CharacterDetailsContent {
                 modifier = Modifier
                     .weight(1f)
                     .clickable {
+                        // On joue un "joli" son quand on click
                         soundPlayer.play("https://cdn.freesound.org/previews/570/570266_3436454-lq.ogg")
                         onAction(CharacterDetailsAction.SelectedLocation(location.id))
                     },

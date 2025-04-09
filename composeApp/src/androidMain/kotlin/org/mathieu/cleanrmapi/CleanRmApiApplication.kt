@@ -9,6 +9,7 @@ class CleanRmApiApplication : Application() {
         super.onCreate()
         initKoin {
             androidContext(this@CleanRmApiApplication)
+            // On injecte la dépendance SoundPlayer spécifique à la plateforme
             modules(platformModule(this@CleanRmApiApplication))
         }
     }

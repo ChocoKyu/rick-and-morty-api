@@ -42,6 +42,7 @@ fun LocationDetailsScreen(
     navController: NavController,
     id: Int
 ) {
+    // Écran principal avec injection du ViewModel et init de la location
     Screen(
         viewModel = viewModel { LocationDetailsViewModel() },
         navController = navController
@@ -52,6 +53,7 @@ fun LocationDetailsScreen(
         Content(
             state = state,
             onClickBack = navController::popBackStack,
+            // On passe "onAction" pour gérer les clics sur les cartes
             onAction = viewModel::handleAction
         )
     }
@@ -75,9 +77,11 @@ private fun Content(
         onClick = onClickBack
     )
 
+    // Change d'affichage en fonction de l'état
     Crossfade(targetState = state, label = "") {
         when (it) {
             is LocationDetailsState.Error -> ErrorView(it.message)
+            // Deux composable pour error et loading, mis aussi dans characterDetails où c'était en TODO
             is LocationDetailsState.Loading -> LoadingView()
             is LocationDetailsState.Loaded -> LocationDetailsContent(it, onAction = onAction)
 
@@ -98,6 +102,8 @@ private object LocationDetailsContent {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+
+            // Le haut de la page avec le nom et la bannière
             Header(
                 name = state.location.name,
                 type = state.location.type,
@@ -105,12 +111,14 @@ private object LocationDetailsContent {
                 offsetY = offsetY
             )
 
+            // Grille responsive avec les personnages
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 itemsIndexed(state.residents) { index, character ->
+                    // Sert à calculer dynamiquement la hauteur du header
                     if (index == 0) {
                         Box(modifier = Modifier.onGloballyPositioned {
                             offsetY = it.positionInParent().y
@@ -124,6 +132,7 @@ private object LocationDetailsContent {
                             .background(SurfaceColor)
                             .fillMaxWidth()
                             .clickable {
+                                // Navigue vers la page du personnage
                                 onAction(LocationDetailsAction.SelectedCharacter(character.id))
                             },
                         character = character
@@ -140,6 +149,7 @@ private object LocationDetailsContent {
         dimension: String,
         offsetY: Float
     ) {
+        // Animation douce de la hauteur du header selon le scroll
         val density = LocalDensity.current
         val additionalHeight: Dp = with(density) { offsetY.toDp() }
         val animatedHeight by animateDpAsState(targetValue = 200.dp + additionalHeight)
@@ -149,6 +159,7 @@ private object LocationDetailsContent {
                 .fillMaxWidth()
                 .height(animatedHeight)
         ) {
+            // Image de fond plein écran: il n'y avait pas d'url associé aux locztion, donc la meme pour toutes les locations
             AsyncImage(
                 model = "https://images.wallpapersden.com/image/download/rick-and-morty_am5mZmeUmZqaraWkpJRobWllrWdma2U.jpg",
                 contentDescription = null,
@@ -156,6 +167,7 @@ private object LocationDetailsContent {
                 modifier = Modifier.matchParentSize()
             )
 
+            // Contenu texte sur fond semi-transparent
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -169,6 +181,7 @@ private object LocationDetailsContent {
                         .background(SurfaceColor, RoundedCornerShape(6.dp))
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
+                    // Information de la location : nom, type et dimension
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = name,
